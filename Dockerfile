@@ -44,7 +44,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y varnish
 ADD ./ /docker-riemann
 RUN cd /docker-riemann && \
     cp supervisord.conf /etc/supervisor/conf.d/supervisord.conf && \
-    sed -i -e "s|127\.0\.0\.1|0\.0\.0\.0|" /riemann-0.2.2/etc/riemann.config
+    sed -i -e "s|127.0.0.1|0.0.0.0|" /riemann-0.2.2/etc/riemann.config
 
 
 EXPOSE 22 4567 5555 6081
