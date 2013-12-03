@@ -1,25 +1,22 @@
 FROM ubuntu
  
-RUN echo 'deb http://archive.ubuntu.com/ubuntu precise main universe' > /etc/apt/sources.list.d/sources.list && \
-    echo 'deb http://archive.ubuntu.com/ubuntu precise-updates universe' >> /etc/apt/sources.list.d/sources.list && \
+RUN echo 'deb http://archive.ubuntu.com/ubuntu precise main universe' > /etc/apt/sources.list && \
+    echo 'deb http://archive.ubuntu.com/ubuntu precise-updates universe' >> /etc/apt/sources.list && \
     apt-get update
 
 #Prevent daemon start during install
-RUN	echo '#!/bin/sh\nexit 101' > /usr/sbin/policy-rc.d && \
-    chmod +x /usr/sbin/policy-rc.d
+RUN dpkg-divert --local --rename --add /sbin/initctl && ln -s /bin/true /sbin/initctl
 
 #Supervisord
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor && \
-	mkdir -p /var/log/supervisor
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor && mkdir -p /var/log/supervisor
 CMD ["/usr/bin/supervisord", "-n"]
 
 #SSHD
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server && \
-	mkdir /var/run/sshd && \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server &&	mkdir /var/run/sshd && \
 	echo 'root:root' |chpasswd
 
 #Utilities
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y vim less ntp net-tools inetutils-ping curl git telnet bzip2 nmap
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y vim less net-tools inetutils-ping curl git telnet nmap socat dnsutils netcat
 
 #Install Oracle Java 7
 RUN echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main' > /etc/apt/sources.list.d/java.list && \
@@ -32,10 +29,10 @@ RUN echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main' > /
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential ruby1.9.1 ruby1.9.1-dev
 
 #Riemann
-RUN wget http://aphyr.com/riemann/riemann-0.2.3.tar.bz2 && \
+RUN wget http://aphyr.com/riemann/riemann-0.2.4.tar.bz2 && \
     tar xfj riemann-*.tar.bz2 && \
     rm riemann-*.tar.bz2 && \
-    mv riemann-0.2.3 riemann
+    mv riemann-0.2.4 riemann
 
 #Riemann Tools and Dashboard
 RUN gem install riemann-client riemann-tools riemann-dash

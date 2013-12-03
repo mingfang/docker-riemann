@@ -10,6 +10,6 @@ Use ```shell``` to start the Docker container.
 
 Once inside the container, use ```supervisord&``` to start everything.
 
-Point your browser to http://localhost:49185
+Point your browser to http://localhost:49081
 
-On the Dashboard, change the websocket port to 49185 also.
+On the Dashboard, change the websocket port to 49081 also.
